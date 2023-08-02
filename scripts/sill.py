@@ -101,11 +101,11 @@ class SillCanvas(scene.SceneCanvas):
             self.redraw()
             self.cloud_render_ = {}
         elif event.key == 'PageUp':
-            self.cloud_.adjust_z(0.25, update=False)
+            self.cloud_.adjust_z(0.1, update=False)
             self.updated_z_ = False
             self.update_text()
         elif event.key == 'PageDown':
-            self.cloud_.adjust_z(-0.25, update=False)
+            self.cloud_.adjust_z(-0.1, update=False)
             self.updated_z_ = False
             self.update_text()
         elif event.key == 'O':
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     parser.add_argument('bag')
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('--load', action='store_true')
-    parser.add_argument('--period', type=float, default=0.49)
+    parser.add_argument('--period', type=float, default=0.249)
     args = parser.parse_args()
 
     sc = SillCanvas(args.bag, args.start, args.period, args.load)
