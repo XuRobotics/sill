@@ -26,7 +26,8 @@ class SillCanvas(scene.SceneCanvas):
                                         color='red',
                                         anchor_x='left',
                                         parent=self.view_,
-                                        pos=(20, 50))
+                                        pos=(20, 50),
+                                        bold=True)
         self.update_text()
 
         self.cursor_size_ = 50
