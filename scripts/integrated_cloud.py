@@ -6,6 +6,7 @@ import cv2
 from pathlib import Path
 import rospkg
 import yaml
+import traceback
 
 def get_cv_lut(color_lut):
     lut = np.zeros((256, 1, 3), dtype=np.uint8)
@@ -117,7 +118,7 @@ class IntegratedCloud:
         self.inds_ = np.vstack((self.inds_, np.ones([pc.shape[0], 1])*scan_ind))
         # initialize to high z because can overwrite with low z
         self.labels_ = np.vstack((self.labels_, np.repeat(np.array([[0, 1000]]), pc.shape[0], axis=0)))
-        new_colors = ColorArray(np.repeat(np.clip(pc[:, 3, None]/1000, 0, 1), 3, axis=1), alpha=1)
+        new_colors = ColorArray(np.repeat(np.clip(pc[:, 3, None]/1000, 0, 1), 3, axis=1), alpha=0.7) # Changing transparency for visibility
 
         if self.load_:
             label_dir = self.directory_ / 'labels'
@@ -165,9 +166,9 @@ class IntegratedCloud:
         visible = self.cloud_[:, 2] <= self.target_z_
         labelled_below = np.logical_and(self.labels_[:, 1] < self.target_z_, self.labels_[:, 0] > 0)
         if np.any(visible):
-            self.colors_[visible] = ColorArray(self.colors_[visible], alpha=1)
+            self.colors_[visible] = ColorArray(self.colors_[visible], alpha=0.7)
         if np.any(labelled_below):
-            self.colors_[labelled_below] = ColorArray(self.colors_[labelled_below], alpha=0.1)
+            self.colors_[labelled_below] = ColorArray(self.colors_[labelled_below], alpha=0.2) # Making labeled points a bit more visible
         if not np.all(visible):
             self.colors_[np.invert(visible)] = ColorArray(self.colors_[np.invert(visible)], alpha=0)
 
