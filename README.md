@@ -1,4 +1,35 @@
-# SILL: Semantic Integrated LiDAR Labelling
+# Faster-SILL: Faster-LIO Semantic Integrated LiDAR Labeling
+
+This is a modified version of the original SILL labeling tool forked from [Ian's repo](https://github.com/iandouglas96/sill).
+Dependencies on [ouster_decoder](https://github.com/KumarRobotics/ouster_decoder) and [llol](https://github.com/versatran01/llol) are completely removed in this version and it is instead designed to work for [Faster-LIO](https://github.com/gaoxiang12/faster-lio) odometry software and the lastest [Ouster drivers](https://github.com/ouster-lidar/ouster-ros). While a claim can be made that the package is lidar driver agnostic (which means any Ouster driver will work with this), this is yet to be tested thoroughly.
+
+## Changes in Usage
+
+90% of SILL still works in the same fashion as highlighted below in the `Usage` section so only the changes are mentioned here.
+
+### Data to Bag
+
+**Make sure that Faster-LIO is cloned and used from [here.](https://github.com/XuRobotics/faster-lio)** This version provides a complete cloud which is very important! Remember to modify the corresponding faster-lio yaml file properly.
+
+Instead of recording the ROS topics mentioned below, record this instead
+```
+/cloud_registered_body  : sensor_msgs/PointCloud2
+/tf                       : tf2_msgs/TFMessage
+```
+
+### Dealing with Params
+
+Inside the `config` folder, a `params.yaml` file is now included that stores some important parameters.
+
+`Intensity` values differ for different LIDAR types and the way the data is collected. **If this value is not changed accordingly in SILL, it can cause the point clouds to appear too bright or dark which makes accurate labeling impossible**. Use the `examine_intensity.py` script to get the intensity for your data. It takes a `-b` argument which stands for the full bag path and a `-t` argument which stands for the name of the point cloud topic, which should be `/cloud_registered_body`. The script will then spit out the 99th percentile intensity value of the first 200 scans. This is the intensity value that should be set in the `params.yaml` file for legible point clouds. Play around in the range of this value to get better visuals. **Lower the value, brighter the point cloud and vice-versa**.
+
+`num_of_scans_per_press` param overrides the default loading of 10 scans each time `n` key is pressed. This is useful for labeling dense point clouds (eg from os0-128) as loading too many scans at once will cause the tool to slow down.
+
+`z_height_change` param overrides the default increment/decrement in Z height when the `PgUp` or `PgDn` keys are pressed. Tune this to access more fine slices of clouds to label
+
+The rest of the params are self-explanatory.
+
+Happy Labeling!!
 
 ## Dependencies
 * VisPy
