@@ -8,19 +8,26 @@ from queue import Queue
 from threading import Thread
 from integrated_cloud import IntegratedCloud
 from time import perf_counter, time
+import json
 
 class SillCanvas(scene.SceneCanvas):
-    def __init__(self, bagpath, start_ind = 0, period = 1, load = False):
+    def __init__(self, bagpath, start_ind = 0, period = 1, load = False, metadata_path = None):
         scene.SceneCanvas.__init__(self, keys='interactive')
         self.unfreeze()
 
+        if metadata_path is not None:
+            self.meta_shift_info_ = json.load(open(metadata_path, 'r'))['data_format']['pixel_shift_by_row']
+        else:
+            self.meta_shift_info_ = None
+
         self.view_ = self.central_widget.add_view(bgcolor='white')
-        self.cloud_ = IntegratedCloud(bagpath, start_ind, period, load)
+        self.cloud_ = IntegratedCloud(bagpath, start_ind, period, load, self.meta_shift_info_)
         self.cloud_render_ = {}
         self.last_mouse_point_ = np.zeros(2)
         self.current_class_ = 1
         self.index_ = start_ind
         self.updated_z_ = True
+
 
         self.text_ = scene.visuals.Text("Status",
                                         color='red',
@@ -153,7 +160,8 @@ if __name__ == '__main__':
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('--load', action='store_true')
     parser.add_argument('--period', type=float, default=0.249)
+    parser.add_argument("-m", "--metadata", type=str, default=None)
     args = parser.parse_args()
 
-    sc = SillCanvas(args.bag, args.start, args.period, args.load)
+    sc = SillCanvas(args.bag, args.start, args.period, args.load, args.metadata)
     app.run()
