@@ -1,0 +1,21 @@
+---
+# Determines the visual look of the point cloud in the tool
+# Use examine_intensity.py to find the intensity range of the point cloud
+# Play around with the intensity range to get the best visual look
+# Lower the intensity value to get a brighter point cloud, and vice versa
+intensity: 100 # default for os0-128 (obtained from VT forest trip (Appomattox Trip) data)
+# Determines the number of scans to be processed per press of the 'n' key
+# Use smaller number for os0-128 as point cloud is too dense
+num_of_scans_per_press: 5 # default for os0-128 (Denser than os1-64; Can use 10 for os1-64)
+# This is the value by which the height of the point cloud is changed when Page Up or Page Down is pressed
+# Recommended to use small numbers as it helps with detailed labeling
+z_height_change: 0.1
+# The vertical field of view of the lidar
+# Divide by 2 to get the upper and lower vertical field of view
+# Upper is positive, lower is negative
+# So 90 degrees vertical field of view will be +-45 degrees
+lidar_fov_up: 45
+lidar_fov_down: -45
+# The expected height and width of the organized point cloud
+organized_pc_H: 128
+organized_pc_W: 2048
