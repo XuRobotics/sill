@@ -17,9 +17,9 @@ def get_cv_lut(color_lut):
 
 class IntegratedCloud:
     def __init__(self, bagpath, start_ind, period, load, pixel_shift, params, directory = None):
-        self.loader_ = DataLoader(bagpath, period).__iter__()
-        self.pixel_shift_ = pixel_shift
         self.params_ = params
+        self.loader_ = DataLoader(bagpath, self.params_, period).__iter__()
+        self.pixel_shift_ = pixel_shift
         self.block_size_ = 10
         self.start_ind_ = start_ind
         self.load_ = load

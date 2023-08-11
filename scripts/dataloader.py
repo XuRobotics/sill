@@ -19,7 +19,8 @@ def ros_pose_to_numpy(msg):
 
 
 class DataLoader:
-    def __init__(self, bagpath, spacing_sec=1):
+    def __init__(self, bagpath,  params, spacing_sec=1):
+        self.params_ = params
         self.bag_ = rosbag.Bag(bagpath, 'r')
         self.spacing_sec_ = spacing_sec
 
@@ -46,7 +47,7 @@ class DataLoader:
         while True:
             if data_sent:
                 # reset buffers
-                data= [None, None]
+                data = [None, None]
                 self.frame_pose_ = None
                 data_sent = False
             topic, msg, t = self.bag_iter_.__next__()
@@ -75,10 +76,14 @@ class DataLoader:
                         time_stamp_data[1] = msg.header.stamp.to_sec()
 
                         # TODO: Hardcoding the shape and fov
-                        laser_scan_obj  = LaserScan(project=True, H=128, W=2048, fov_up=45.0, fov_down=-45.0)
+                        laser_scan_obj = LaserScan(project=True, H=self.params_[
+                                                   'organized_pc_H'], W=self.params_['organized_pc_W'],
+                                                   fov_up=self.params_['lidar_fov_up'], fov_down=self.params_['lidar_fov_down'])
 
-                        laser_scan_obj.open_scan(points_xyz=pc[:, :3].copy(), points_intensity=pc[:, 3].copy())
-                        organized_pc = np.dstack((laser_scan_obj.proj_xyz, laser_scan_obj.proj_remission[:,:,None]))
+                        laser_scan_obj.open_scan(
+                            points_xyz=pc[:, :3].copy(), points_intensity=pc[:, 3].copy())
+                        organized_pc = np.dstack(
+                            (laser_scan_obj.proj_xyz, laser_scan_obj.proj_remission[:, :, None]))
 
                         data[0] = organized_pc.reshape(-1, 4)
                         data[1] = organized_pc
@@ -102,7 +107,8 @@ class DataLoader:
                     self.last_stamp_ = stamp
                     data_sent = True
                     print("-------------------")
-                    print("Cloud Stamp / Size: ", time_stamp_data[1],data[0].shape)
+                    print("Cloud Stamp / Size: ",
+                          time_stamp_data[1], data[0].shape)
                     print("-------------------")
                     return [data[0], data[1], self.frame_pose_, stamp]
 
@@ -130,7 +136,7 @@ if __name__ == '__main__':
                 if trans.header.frame_id == 'camera_init' and \
                         trans.child_frame_id == 'body':
                     print(topic, t.to_sec())
-        else:            
+        else:
             print(topic, t.to_sec())
         if count == 50:
             break
