@@ -9,6 +9,9 @@ from threading import Thread
 from integrated_cloud import IntegratedCloud
 from time import perf_counter, time
 import json
+import rospkg
+from pathlib import Path
+import yaml
 
 class SillCanvas(scene.SceneCanvas):
     def __init__(self, bagpath, start_ind = 0, period = 1, load = False, metadata_path = None):
@@ -20,8 +23,14 @@ class SillCanvas(scene.SceneCanvas):
         else:
             self.meta_shift_info_ = None
 
+        #Loading params
+        rospack = rospkg.RosPack()
+        package_path = Path(rospack.get_path('sill'))
+        self.params_ = yaml.load(open(package_path / Path('config') / Path('params.yaml'), 'r'),
+                           Loader=yaml.SafeLoader)
+
         self.view_ = self.central_widget.add_view(bgcolor='white')
-        self.cloud_ = IntegratedCloud(bagpath, start_ind, period, load, self.meta_shift_info_)
+        self.cloud_ = IntegratedCloud(bagpath, start_ind, period, load, self.meta_shift_info_, self.params_)
         self.cloud_render_ = {}
         self.last_mouse_point_ = np.zeros(2)
         self.current_class_ = 1
@@ -90,9 +99,9 @@ class SillCanvas(scene.SceneCanvas):
         if event.key == 'R':
             self.redraw()
         elif event.key == 'N':
-            for _ in range(10):
+            for _ in range(self.params_['num_of_scans_per_press']):
                 self.cloud_.add_new()    
-            self.index_ += 10
+            self.index_ += self.params_['num_of_scans_per_press']
             self.redraw()
             self.update_text()
         elif event.key == 'Space' and self.mode_ == 'label':
@@ -109,11 +118,11 @@ class SillCanvas(scene.SceneCanvas):
             self.redraw()
             self.cloud_render_ = {}
         elif event.key == 'PageUp':
-            self.cloud_.adjust_z(0.1, update=False)
+            self.cloud_.adjust_z(self.params_["z_height_change"], update=False)
             self.updated_z_ = False
             self.update_text()
         elif event.key == 'PageDown':
-            self.cloud_.adjust_z(-0.1, update=False)
+            self.cloud_.adjust_z(-self.params_["z_height_change"], update=False)
             self.updated_z_ = False
             self.update_text()
         elif event.key == 'O':
