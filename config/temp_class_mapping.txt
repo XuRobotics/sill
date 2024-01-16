@@ -1,0 +1,4 @@
+vegetation-> indoor_floor
+building-> chairs
+grass/sidewalk-> tables
+human-> potted_plants

@@ -3,7 +3,7 @@
 # Use examine_intensity.py to find the intensity range of the point cloud
 # Play around with the intensity range to get the best visual look
 # Lower the intensity value to get a brighter point cloud, and vice versa
-intensity: 100 # default for os0-128 (obtained from VT forest trip (Appomattox Trip) data)
+intensity: 1000 # default for os0-128 (obtained from VT forest trip (Appomattox Trip) data)
 
 # Determines the number of scans to be processed per press of the 'n' key
 # Use smaller number for os0-128 as point cloud is too dense
@@ -21,5 +21,5 @@ lidar_fov_up: 45
 lidar_fov_down: -45
 
 # The expected height and width of the organized point cloud
-organized_pc_H: 128
-organized_pc_W: 2048
+organized_pc_H: 64
+organized_pc_W: 1024
