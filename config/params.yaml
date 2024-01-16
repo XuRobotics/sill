@@ -17,8 +17,8 @@ z_height_change: 0.1
 # Divide by 2 to get the upper and lower vertical field of view
 # Upper is positive, lower is negative
 # So 90 degrees vertical field of view will be +-45 degrees
-lidar_fov_up: 45
-lidar_fov_down: -45
+lidar_fov_up: 22.5
+lidar_fov_down: -22.5
 
 # The expected height and width of the organized point cloud
 organized_pc_H: 64
