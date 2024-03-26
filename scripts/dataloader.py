@@ -5,6 +5,7 @@ from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PoseStamped
 import argparse
 from laserscan import LaserScan
+import rospy
 
 
 def ros_pose_to_numpy(msg):
