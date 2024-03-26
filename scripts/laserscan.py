@@ -28,7 +28,8 @@ class LaserScan:
     self.points = np.zeros((0, 3), dtype=np.float32)        # [m, 3]: x, y, z
     self.remissions = np.zeros((0, 1), dtype=np.float32)    # [m ,1]: remission
 
-    self.no_data_val = -1
+    # NOTE: Changing the empty data to represent 0 instead of -1
+    self.no_data_val = 0
     # projected range image - [H,W] range (-1 is no data)
     self.proj_range = np.full((self.proj_H, self.proj_W), self.no_data_val,
                               dtype=np.float32)
