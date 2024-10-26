@@ -127,7 +127,11 @@ class SillCanvas(scene.SceneCanvas):
             self.update_text()
         elif event.key == 'O':
             self.mode_ = 'view3'
-            self.view_.camera = scene.TurntableCamera()
+            center_camera = scene.TurntableCamera(fov=90)
+            center_camera.center = (0, 0, 0)
+            center_camera.scale_factor = 5.0  # Adjust this value to zoom closer to the origin
+            self.view_.camera = center_camera
+            # self.view_.camera = scene.TurntableCamera()
         elif event.key == 'L':
             self.mode_ = 'label'
             self.view_.camera = scene.PanZoomCamera(aspect=1)

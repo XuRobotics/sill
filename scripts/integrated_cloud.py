@@ -36,7 +36,7 @@ class IntegratedCloud:
     def load_luts(self):
         rospack = rospkg.RosPack()
         package_path = Path(rospack.get_path('sill'))
-        config = yaml.load(open(package_path / Path('config') / Path('classes.yaml'), 'r'),
+        config = yaml.load(open(package_path / Path('config') / Path('classes_dcist.yaml'), 'r'),
                            Loader=yaml.SafeLoader)
         class_lut = []
         color_lut = []
@@ -77,6 +77,7 @@ class IntegratedCloud:
             #                     *img.shape[:2], -1)
             # destagger
             img_undist = img.copy()
+            img_undist[np.where(img_undist == -1000)] = 0.0
             # img_undist[:, :, 3] = depth_intensity[:, :, 1].astype(np.float32)
             label_undist = img_labels.copy()
             # for row, shift in enumerate(self.pixel_shift_):

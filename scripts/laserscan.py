@@ -29,7 +29,7 @@ class LaserScan:
     self.remissions = np.zeros((0, 1), dtype=np.float32)    # [m ,1]: remission
 
     # NOTE: Changing the empty data to represent 0 instead of -1
-    self.no_data_val = 0
+    self.no_data_val = -1000
     # projected range image - [H,W] range (-1 is no data)
     self.proj_range = np.full((self.proj_H, self.proj_W), self.no_data_val,
                               dtype=np.float32)
@@ -156,7 +156,10 @@ class LaserScan:
 
     # get depth of all points
     depth = np.linalg.norm(self.points, 2, axis=1)
-    depth[depth == 0] = 0.0000001 #Stop divide by 0
+    points_to_remove = np.where((depth == 0) | (depth > 40))
+    depth = np.delete(depth, points_to_remove)
+    self.points = np.delete(self.points, points_to_remove, axis=0)
+    self.remissions = np.delete(self.remissions, points_to_remove)
 
     # set range limit, limit range
     # threshold by range (distance), ignore points that are far away, only consider points within the given range
